@@ -1,0 +1,16 @@
+Use case Name: Login 
+Behavior Scenarios:
+Basic flow:
+1. Người dùng nhập vào [#ti] [#user-name] tên người dùng và mật khẩu [#ti][#password]
+2. Người dùng yêu cầu hệ thống đăng nhập với tên người dùng và mật khẩu đã nhập [#bi][#login].
+3. [#valid] [#pw] Hệ thống hiển thị trang thông báo cho người dùng biết đã đăng nhập thành công [#to]
+
+Alternate flow 1:
+1. Người dùng nhập vào tên người dùng (#ti) và mật khẩu (#ti)
+2. Người dùng yêu cầu hệ thống đăng nhập với tên người dùng và mật khẩu đã nhập (#bi).
+3'. [#invalid] [#pw] Hệ thống hiển thị trang thông báo cho người dùng biết đã đăng nhập thất bại do sai mật khẩu [#to]
+
+Alternate flow 2:
+1. Người dùng nhập vào tên người dùng (#ti) và mật khẩu (#ti)
+2. Người dùng yêu cầu hệ thống đăng nhập với tên người dùng và mật khẩu đã nhập (#bi).
+3''. [#empty] [#pw] Hệ thống hiển thị trang thông báo cho người dùng biết đã đăng nhập thất bại do chưa nhập mật khẩu [#to]
