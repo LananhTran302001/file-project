@@ -1,15 +1,26 @@
 from __future__ import annotations
 from pandas import DataFrame
-from gen_graph import read_flows
 from Excel import Excel
 
 excel = Excel("annotations.xlsx")
+excel.description()
+print(excel.is_element("#ti"))
+print(excel.is_input_element("#tio"))
 
 def testcase(flow):
+    input_elements = []
+    input_labels = []
     for event in flow.events:
         for annotation in event.annotations:
-            if (excel.is_element(annotations)):
-                pass
+            if (excel.is_input_element(annotations)):
+                input_elements.append(annotation)
+            elif (excel.is_label(annotation)):
+                input_labels.append(annotation.strip('#'))
+            
+            if (len(input_elements) - len(input_labels) > 1):
+                input_labels.append("")
+            elif (len(input_labels) - len(input_elements) > 1):
+                input_elements.append("")
 
 
 def from_flows_to_testcases(flow):
@@ -29,7 +40,3 @@ def from_flows_to_testcases(flow):
         'Expected output data': flow.get_output_annotations()
     })
     data.to_excel("testcases.xlsx")
-
-result = read_flows("flows.txt")
-flows = result["flows"]
-from_flows_to_testcases(flows[0])

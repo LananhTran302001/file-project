@@ -1,5 +1,4 @@
 import re
-from numpy import true_divide
 from pandas import read_excel, ExcelFile
 
 ANNOTATION_SHEET = "annotations"
@@ -20,15 +19,15 @@ class Excel:
     def __init__(self, file_path):
         self.file_path = file_path
         with ExcelFile(file_path) as reader:
-            self.annotations = read_excel(reader, sheet_name=ANNOTATION_SHEET).astype("string").loc[:,ANNOTATION_COLUMN].to_list()
             self.elements = read_excel(reader, sheet_name=ELEMENT_SHEET).astype("string").loc[:,[ELEMENT_COLUMN, ELEMENT_MEANING_COLUMN, ELEMENT_HTML_COLUMN]]
             self.states = read_excel(reader, sheet_name=STATE_SHEET).astype("string").loc[:,STATE_COLUMN].to_list()
+            self.annotations = read_excel(reader, sheet_name=ANNOTATION_SHEET).astype("string").loc[:,ANNOTATION_COLUMN].to_list()
             self.flows = read_excel(reader, sheet_name=FLOW_SHEET).astype("string").loc[:,FLOW_COLUMN].to_list()
             self.events = read_excel(reader, sheet_name=EVENT_SHEET).astype("string").loc[:,EVENT_COLUMN].to_list()
 
-            self.annotations = [i.lower().strip() for i in self.annotations]
-            self.elements = [i.lower().strip() for i in self.elements]
+            self.elements = self.elements.applymap(lambda x: str(x).lower().strip(), na_action='ignore')
             self.states = [i.lower().strip() for i in self.states]
+            self.annotations = [i.lower().strip() for i in self.annotations]
             self.flows = [i.lower().strip() for i in self.flows]
             self.events = [i.lower().strip() for i in self.events]
 
@@ -39,24 +38,34 @@ class Excel:
         print(self.events)
         print(self.annotations)
     
-    def is_element(self, str):
-        return (str in self.elements[ELEMENT_COLUMN])
+    def is_element(self, element_annot):
+        return (self.elements[ELEMENT_COLUMN].str.contains(element_annot).any())
 
-    def is_input_element(self, str):
-        # get meaning tương ứng
-        if (self.is_element(str)):
-            if ("input" in str):
+    def get_element(self, element_annot):
+        return self.elements.loc[self.elements[ELEMENT_COLUMN] == element_annot]
+
+    def get_element_meaning(self, element_annot):
+        return self.get_element(element_annot)[ELEMENT_MEANING_COLUMN].values[0]
+
+    def get_element_html(self, element_annot):
+        return self.get_element(element_annot)[ELEMENT_HTML_COLUMN].values[0]
+
+    def is_input_element(self, element_annot):
+        if (self.is_element(element_annot)):
+            element_meaning = self.get_element_meaning(element_annot)
+            if ("input" in element_meaning):
                 return True
-            elif ("output" in str):
+            elif ("output" in element_meaning):
                 return False
             else:
                 return True
     
-    def is_ouput_element(self, str):
-        if (self.is_element(str)):
-            if ("output" in str):
+    def is_ouput_element(self, element_annot):
+        if (self.is_element(element_annot)):
+            element_meaning = self.get_element_meaning(element_annot)
+            if ("output" in element_meaning):
                 return True
-            elif ("input" in str):
+            elif ("input" in element_meaning):
                 return False
             else:
                 return True
@@ -67,6 +76,9 @@ class Excel:
     def is_annotation(self, str):
         current_anno_regex = self.annotations[0]
         return re.match(current_anno_regex, str)
+
+    def is_label(self, str):
+        return (self.is_annotation(str) and (not self.is_element(str)) and (not self.is_state(str)))
 
     def is_event_name(self, str):
         current_event_regex = self.events[0]
