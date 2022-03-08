@@ -5,29 +5,6 @@ from Event import Event
 
 excel = Excel("annotations.xlsx")
 
-def use_cases_to_flows(use_cases_file_path, flows_file_path):
-    flows = []
-    events_collection = EventCollection()
-
-    lines = []
-    with open(use_cases_file_path, mode="r", encoding="utf-8") as reader:
-        lines = reader.readlines()
-
-    for line in lines:
-        if (excel.is_flow_name(line)):
-            flows.append(Flow(line))
-        elif (excel.is_event_name(line)):
-            e = Event(excel.extract_event_name(line))
-            e.set_annotations(excel.extract_annotations(line))
-            
-            events_collection.add_event(e)
-            flows[-1].add_event(events_collection.get_event(e.name))
-    
-    with open(flows_file_path, mode="w", encoding="utf-8") as writer:
-        for flow in flows:
-            writer.write(str(flow))
-            writer.write("\n")
-
 def read_usecases(usecases_file_path):
     flows = []
     events_collection = EventCollection()
@@ -105,8 +82,74 @@ def read_events(events_file_path):
 
     return {'events':events_collection}
 
+def flows_to_txt(flows, txt_file_path):
+    with open(txt_file_path, mode="w", encoding="utf-8") as writer:
+        for flow in flows:
+            writer.write(str(flow))
+            writer.write("\n")
+
+def events_to_txt(events_collection, txt_file_path):
+    with open(txt_file_path, mode="w", encoding="utf-8") as writer:
+        for e in events_collection.events:
+            writer.write(str(e))
+            writer.write("\n")
+
 def flows_to_excel(flows_file_path, excel_file_path):
     pass
 
+
+def testcase(flow):
+    # testcase input
+    input_elements = []
+    input_labels = []
+
+    input_annotations = flow.get_input_annotations()
+    for i in range(len(input_annotations)):
+        # Nếu annotation là input element
+        if (excel.is_input_element(input_annotations[i])):
+            input_elements.append(input_annotations[i])
+            # Nếu annotation tiếp theo là label
+            if (excel.is_label(input_annotations[i + 1])):
+                input_labels.append(input_annotations[i + 1].strip('#'))
+                i = i + 1
+                continue 
+            else:
+                input_labels.append("")
+        # Nếu annotation là label
+        elif (excel.is_label(input_annotations[i])):
+            input_elements.append("")
+            input_labels.append(input_annotations[i])
+
+    # testcase output
+    output_elements = []
+    output_state = ""
+    output_label = ""
+
+    output_annotations = flow.get_output_annotations()
+    for annot in output_annotations:
+        # Nếu annotation là output element
+        if (excel.is_ouput_element(annot)):
+            output_elements.append(annot)
+
+        # Nếu annotation là state
+        elif (excel.is_state):
+            output_state = output_state + " " + annot
+        
+        # Nếu không -> annotation là label
+        else:
+            output_label = output_label + " " + annot
+
+    return {
+        'input elements': input_elements,
+        'input_labels': input_labels,
+        'output_elements': output_elements,
+        'output_state': output_state,
+        'output_label': output_label
+    }
+
 result = read_flows("flows.txt")
-print(result["events"])
+flows = result["flows"]
+for f in flows:
+    print (str(f))
+print("-------------------------------------")
+print(testcase(flows[0]))

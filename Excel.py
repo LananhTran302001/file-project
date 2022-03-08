@@ -77,8 +77,8 @@ class Excel:
         current_anno_regex = self.annotations[0]
         return re.match(current_anno_regex, str)
 
-    def is_label(self, str):
-        return (self.is_annotation(str) and (not self.is_element(str)) and (not self.is_state(str)))
+    def is_label(self, annotation):
+        return ((not self.is_element(annotation)) and (not self.is_state(annotation)))
 
     def is_event_name(self, str):
         current_event_regex = self.events[0]

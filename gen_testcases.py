@@ -1,26 +1,56 @@
-from __future__ import annotations
 from pandas import DataFrame
 from Excel import Excel
 
 excel = Excel("annotations.xlsx")
 excel.description()
-print(excel.is_element("#ti"))
-print(excel.is_input_element("#tio"))
 
 def testcase(flow):
+    # testcase input
     input_elements = []
     input_labels = []
-    for event in flow.events:
-        for annotation in event.annotations:
-            if (excel.is_input_element(annotations)):
-                input_elements.append(annotation)
-            elif (excel.is_label(annotation)):
-                input_labels.append(annotation.strip('#'))
-            
-            if (len(input_elements) - len(input_labels) > 1):
+
+    input_annotations = flow.get_input_annotations()
+    for i in range(len(input_annotations)):
+        # Nếu annotation là input element
+        if (excel.is_input_element(input_annotations[i])):
+            input_elements.append(input_annotations[i])
+            # Nếu annotation tiếp theo là label
+            if (excel.is_label(input_annotations[i + 1])):
+                input_labels.append(input_annotations[i + 1].strip('#'))
+                i = i + 1
+            else:
                 input_labels.append("")
-            elif (len(input_labels) - len(input_elements) > 1):
-                input_elements.append("")
+        # Nếu annotation là label
+        elif (excel.is_label(input_annotations[i])):
+            input_elements.append("")
+            input_labels.append(input_annotations[i])
+
+    # testcase output
+    output_elements = []
+    output_state = ""
+    output_label = ""
+
+    output_annotations = flow.get_output_annotations()
+    for annot in output_annotations:
+        # Nếu annotation là output element
+        if (excel.is_ouput_element(annot)):
+            output_elements.append(annot)
+
+        # Nếu annotation là state
+        elif (excel.is_state):
+            output_state = output_state + " " + annot
+        
+        # Nếu không -> annotation là label
+        else:
+            output_label = output_label + " " + annot
+
+    return {
+        'input elements': input_elements,
+        'input_labels': input_labels,
+        'output_elements': output_elements,
+        'output_state': output_state,
+        'output_label': output_label
+    }
 
 
 def from_flows_to_testcases(flow):
