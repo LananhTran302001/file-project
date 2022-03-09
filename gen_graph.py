@@ -3,6 +3,8 @@ from Excel import Excel
 from Flow import Flow
 from Event import Event
 
+from pandas import ExcelWriter, DataFrame
+
 excel = Excel("annotations.xlsx")
 
 def read_usecases(usecases_file_path):
@@ -104,21 +106,23 @@ def testcase(flow):
     input_labels = []
 
     input_annotations = flow.get_input_annotations()
-    for i in range(len(input_annotations)):
+    i = 0
+    while (i < len(input_annotations)):
         # Nếu annotation là input element
         if (excel.is_input_element(input_annotations[i])):
-            input_elements.append(input_annotations[i])
+            input_elements.append(input_annotations[i]) 
             # Nếu annotation tiếp theo là label
             if (excel.is_label(input_annotations[i + 1])):
                 input_labels.append(input_annotations[i + 1].strip('#'))
                 i = i + 1
-                continue 
             else:
                 input_labels.append("")
         # Nếu annotation là label
         elif (excel.is_label(input_annotations[i])):
             input_elements.append("")
             input_labels.append(input_annotations[i])
+        
+        i = i  + 1
 
     # testcase output
     output_elements = []
@@ -140,16 +144,30 @@ def testcase(flow):
             output_label = output_label + " " + annot
 
     return {
-        'input elements': input_elements,
+        'input_elements': input_elements,
         'input_labels': input_labels,
         'output_elements': output_elements,
         'output_state': output_state,
         'output_label': output_label
     }
 
+def testcase_to_excel(excel_file_path, testcases):
+    data = DataFrame(
+        {
+            'input elements': [testcases['input_elements']],
+            'input labels': [testcases['input_labels']],
+        }
+    )
+    print(data)
+    with ExcelWriter(excel_file_path) as writer:
+        data.to_excel(writer)
+
+
 result = read_flows("flows.txt")
 flows = result["flows"]
 for f in flows:
     print (str(f))
 print("-------------------------------------")
-print(testcase(flows[0]))
+t = testcase(flows[0])
+print(t)
+testcase_to_excel("hello.xlsx", t)
