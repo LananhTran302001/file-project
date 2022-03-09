@@ -99,6 +99,9 @@ def events_to_txt(events_collection, txt_file_path):
 def flows_to_excel(flows_file_path, excel_file_path):
     pass
 
+def increase_length(list, length):
+    for i in range(len(list), length):
+        list.append("")
 
 def testcase(flow):
     # testcase input
@@ -110,7 +113,7 @@ def testcase(flow):
     while (i < len(input_annotations)):
         # Nếu annotation là input element
         if (excel.is_input_element(input_annotations[i])):
-            input_elements.append(input_annotations[i]) 
+            input_elements.append(excel.get_element_meaning(input_annotations[i])) # laasy meaning 
             # Nếu annotation tiếp theo là label
             if (excel.is_label(input_annotations[i + 1])):
                 input_labels.append(input_annotations[i + 1].strip('#'))
@@ -126,36 +129,46 @@ def testcase(flow):
 
     # testcase output
     output_elements = []
-    output_state = ""
-    output_label = ""
+    output_states = []
+    output_labels = []
 
     output_annotations = flow.get_output_annotations()
     for annot in output_annotations:
         # Nếu annotation là output element
         if (excel.is_ouput_element(annot)):
-            output_elements.append(annot)
+            output_elements.append(excel.get_element_meaning(annot))
 
         # Nếu annotation là state
-        elif (excel.is_state):
-            output_state = output_state + " " + annot
+        elif (excel.is_state(annot)):
+            output_states.append(annot.strip('#'))
         
         # Nếu không -> annotation là label
         else:
-            output_label = output_label + " " + annot
+            output_labels.append(annot)
+
+    num_of_rows = max(len(input_elements), len(input_labels), len(output_elements))
+    increase_length(input_elements, num_of_rows)
+    increase_length(input_labels, num_of_rows)
+    increase_length(output_elements, num_of_rows)
+    increase_length(output_states, num_of_rows)
+    increase_length(output_labels, num_of_rows)
 
     return {
         'input_elements': input_elements,
         'input_labels': input_labels,
         'output_elements': output_elements,
-        'output_state': output_state,
-        'output_label': output_label
+        'output_states': output_states,
+        'output_labels': output_labels
     }
 
 def testcase_to_excel(excel_file_path, testcases):
     data = DataFrame(
         {
-            'input elements': [testcases['input_elements']],
-            'input labels': [testcases['input_labels']],
+            'input elements': testcases['input_elements'],
+            'input labels': testcases['input_labels'],
+            'output elements': testcases['output_elements'],
+            'output states': testcases['output_states'],
+            'output labels': testcases['output_labels']
         }
     )
     print(data)
