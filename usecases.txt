@@ -1,7 +1,7 @@
 Use case Name: Login 
 Behavior Scenarios:
 Basic flow:
-1. Người dùng nhập vào [#ti] [#user-name] tên người dùng và mật khẩu [#ti][#password]
+1. Người dùng nhập vào [#ti][#user-name]  tên người dùng và mật khẩu [#ti][#password]
 2. Người dùng yêu cầu hệ thống đăng nhập với tên người dùng và mật khẩu đã nhập [#bi][#login].
 3. [#valid] [#pw] Hệ thống hiển thị trang thông báo cho người dùng biết đã đăng nhập thành công [#to]
 

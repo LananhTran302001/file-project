@@ -2,6 +2,7 @@ from EventCollection import EventCollection
 from Excel import Excel
 from Flow import Flow
 from Event import Event
+from Testcase import Testcase
 
 from pandas import ExcelWriter, DataFrame
 
@@ -96,81 +97,50 @@ def events_to_txt(events_collection, txt_file_path):
             writer.write(str(e))
             writer.write("\n")
 
-def flows_to_excel(flows_file_path, excel_file_path):
-    pass
 
-def increase_length(list, length):
-    for i in range(len(list), length):
-        list.append("")
+def testcase(index, flow):
+    t = Testcase(index)
 
-def testcase(flow):
     # testcase input
-    input_elements = []
-    input_labels = []
-
     input_annotations = flow.get_input_annotations()
     i = 0
     while (i < len(input_annotations)):
         # Nếu annotation là input element
         if (excel.is_input_element(input_annotations[i])):
-            input_elements.append(excel.get_element_meaning(input_annotations[i])) # laasy meaning 
+            input_element = excel.get_element_meaning(input_annotations[i]) # laasy meaning 
             # Nếu annotation tiếp theo là label
             if (excel.is_label(input_annotations[i + 1])):
-                input_labels.append(input_annotations[i + 1].strip('#'))
+                t.add_input(input_element=input_element, input_label=input_annotations[i + 1])
                 i = i + 1
             else:
-                input_labels.append("")
+                t.add_input(input_element, "")
         # Nếu annotation là label
         elif (excel.is_label(input_annotations[i])):
-            input_elements.append("")
-            input_labels.append(input_annotations[i])
-        
+            t.add_input("", input_annotations[i])        
         i = i  + 1
 
+
     # testcase output
-    output_elements = []
-    output_states = []
-    output_labels = []
-
     output_annotations = flow.get_output_annotations()
-    for annot in output_annotations:
-        # Nếu annotation là output element
-        if (excel.is_ouput_element(annot)):
-            output_elements.append(excel.get_element_meaning(annot))
-
+    i = 0
+    while (i < len(output_annotations)):
         # Nếu annotation là state
-        elif (excel.is_state(annot)):
-            output_states.append(annot.strip('#'))
-        
-        # Nếu không -> annotation là label
+        if (excel.is_state(output_annotations[i])):
+            if (excel.is_ouput_element(output_annotations[i + 1])):
+                t.add_output_data(output_annotations[i] + " " + output_annotations[i + 1])
+                i = i + 1
+        # Nếu annotation là output element
+        elif (excel.is_ouput_element(output_annotations[i])):
+            t.add_output_data(output_annotations[i])
+        # Nếu annotation là label
         else:
-            output_labels.append(annot)
+            t.add_output_label(output_annotations[i])
+        
+        i = i + 1
+    return t.dictionary()
 
-    num_of_rows = max(len(input_elements), len(input_labels), len(output_elements))
-    increase_length(input_elements, num_of_rows)
-    increase_length(input_labels, num_of_rows)
-    increase_length(output_elements, num_of_rows)
-    increase_length(output_states, num_of_rows)
-    increase_length(output_labels, num_of_rows)
-
-    return {
-        'input_elements': input_elements,
-        'input_labels': input_labels,
-        'output_elements': output_elements,
-        'output_states': output_states,
-        'output_labels': output_labels
-    }
-
-def testcase_to_excel(excel_file_path, testcases):
-    data = DataFrame(
-        {
-            'input elements': testcases['input_elements'],
-            'input labels': testcases['input_labels'],
-            'output elements': testcases['output_elements'],
-            'output states': testcases['output_states'],
-            'output labels': testcases['output_labels']
-        }
-    )
+def testcase_to_excel(excel_file_path, testcase):
+    data = DataFrame(testcase)
     print(data)
     with ExcelWriter(excel_file_path) as writer:
         data.to_excel(writer)
@@ -181,6 +151,6 @@ flows = result["flows"]
 for f in flows:
     print (str(f))
 print("-------------------------------------")
-t = testcase(flows[0])
+t = testcase(1, flows[0])
 print(t)
-testcase_to_excel("hello.xlsx", t)
+testcase_to_excel("hello1.xlsx", t)
