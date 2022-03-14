@@ -4,6 +4,7 @@ class Testcase:
         self.index.append(index)
         self.input_elements = []
         self.input_labels = []
+        self.output_states = []
         self.output_labels = []
         self.output_data = []
 
@@ -21,7 +22,10 @@ class Testcase:
     def add_output(self, output_element, output_state, output_label):
         if (output_label):
             self.output_labels.append(output_label)
-        self.output_data.append(output_state + output_element)
+        if (output_state):
+            self.output_states.append(output_state)
+        if (output_element):
+            self.output_data
 
     def add_output_data(self, output_data):
         self.output_data.append(output_data)

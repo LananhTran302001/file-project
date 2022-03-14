@@ -8,7 +8,7 @@ from pandas import ExcelWriter, DataFrame
 
 excel = Excel("annotations.xlsx")
 
-def read_usecases(usecases_file_path):
+def read_from_usecases(usecases_file_path):
     flows = []
     events_collection = EventCollection()
 
@@ -29,7 +29,7 @@ def read_usecases(usecases_file_path):
     return {'flows': flows, 'events': events_collection}
 
 
-def read_flows(flows_file_path):
+def read_from_flows(flows_file_path):
     flows = []
     events_collection = EventCollection()
     collected = False
@@ -60,7 +60,7 @@ def read_flows(flows_file_path):
 
     return {'flows':flows, 'events':events_collection}
 
-def read_events(events_file_path):
+def read_from_events(events_file_path):
     events_collection = EventCollection()
 
     lines = []
@@ -98,7 +98,7 @@ def events_to_txt(events_collection, txt_file_path):
             writer.write("\n")
 
 
-def testcase(index, flow):
+def flow_to_testcase(index, flow):
     t = Testcase(index)
 
     # testcase input
@@ -126,9 +126,7 @@ def testcase(index, flow):
     while (i < len(output_annotations)):
         # Nếu annotation là state
         if (excel.is_state(output_annotations[i])):
-            if (excel.is_ouput_element(output_annotations[i + 1])):
-                t.add_output_data(output_annotations[i] + " " + output_annotations[i + 1])
-                i = i + 1
+            t.add_output_data(output_annotations[i] + " ")
         # Nếu annotation là output element
         elif (excel.is_ouput_element(output_annotations[i])):
             t.add_output_data(output_annotations[i])
@@ -139,18 +137,30 @@ def testcase(index, flow):
         i = i + 1
     return t.dictionary()
 
-def testcase_to_excel(excel_file_path, testcase):
-    data = DataFrame(testcase)
-    print(data)
+def flows_to_excel(excel_file_path, flows):
+    testcases = {
+        'STT': [],
+        'input element': [],
+        'input label': [],
+        'input data': [],
+        'expected output label': [],
+        'expected output data': []
+    }
+
+    for i in range(len(flows)):
+        t = flow_to_testcase(i + 1, flows[i])
+        testcases['STT'].extend(t['STT'])
+        testcases['input element'].extend(t['input element'])
+        testcases['input label'].extend(t['input label'])
+        testcases['input data'].extend(t['input data'])
+        testcases['expected output label'].extend(t['expected output label'])
+        testcases['expected output data'].extend(t['expected output data'])
+        
+    data = DataFrame(testcases)
     with ExcelWriter(excel_file_path) as writer:
         data.to_excel(writer)
 
 
-result = read_flows("flows.txt")
+result = read_from_flows("flows.txt")
 flows = result["flows"]
-for f in flows:
-    print (str(f))
-print("-------------------------------------")
-t = testcase(1, flows[0])
-print(t)
-testcase_to_excel("hello1.xlsx", t)
+flows_to_excel("hello1.xlsx", flows)
