@@ -1,12 +1,12 @@
 import re
 from pandas import read_excel, ExcelFile
 
-from myconstants import EXCEL_FILE_PATH
-from myconstants import ELEMENT_SHEET, ELEMENT_COLUMN, ELEMENT_MEANING_COLUMN, ELEMENT_HTML_COLUMN
-from myconstants import ANNOTATION_SHEET, ANNOTATION_COLUMN
-from myconstants import STATE_SHEET, STATE_COLUMN
-from myconstants import FLOW_SHEET, FLOW_COLUMN
-from myconstants import EVENT_SHEET, EVENT_COLUMN
+from project.src.myconstants import EXCEL_FILE_PATH
+from project.src.myconstants import ELEMENT_SHEET, ELEMENT_COLUMN, ELEMENT_MEANING_COLUMN, ELEMENT_HTML_COLUMN
+from project.src.myconstants import ANNOTATION_SHEET, ANNOTATION_COLUMN
+from project.src.myconstants import STATE_SHEET, STATE_COLUMN
+from project.src.myconstants import FLOW_SHEET, FLOW_COLUMN
+from project.src.myconstants import EVENT_SHEET, EVENT_COLUMN
 
 class Monitor:
     def __init__(self):

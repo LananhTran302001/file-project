@@ -1,4 +1,4 @@
-from project.EventCollection import EventCollection
+from project.src.EventCollection import EventCollection
 
 class Event:
     def __init__(self, event_name):

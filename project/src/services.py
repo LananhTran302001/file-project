@@ -1,14 +1,14 @@
-from project.EventCollection import EventCollection
-from project.Monitor import Monitor
-from project.Flow import Flow
-from project.Event import Event
-from project.Testcase import Testcase
+from project.src.EventCollection import EventCollection
+from project.src.Monitor import Monitor
+from project.src.Flow import Flow
+from project.src.Event import Event
+from project.src.Testcase import Testcase
 
 from pandas import ExcelWriter, DataFrame
 
 monitor = Monitor()
 
-def read_from_usecases(usecases_file_path):
+def read_usecases_txt(usecases_file_path):
     flows = []
     events_collection = EventCollection()
 
@@ -29,7 +29,7 @@ def read_from_usecases(usecases_file_path):
     return {'flows': flows, 'events': events_collection}
 
 
-def read_from_flows(flows_file_path):
+def read_flows_txt(flows_file_path):
     flows = []
     events_collection = EventCollection()
     collected = False
@@ -60,7 +60,7 @@ def read_from_flows(flows_file_path):
 
     return {'flows':flows, 'events':events_collection}
 
-def read_from_events(events_file_path):
+def read_events_txt(events_file_path):
     events_collection = EventCollection()
 
     lines = []
@@ -163,6 +163,6 @@ def flows_to_excel(excel_file_path, flows):
         data.to_excel(writer)
 
 
-result = read_from_flows("flows.txt")
+result = read_flows_txt("flows.txt")
 flows = result["flows"]
 flows_to_excel("hello1.xlsx", flows)
