@@ -1,5 +1,5 @@
 from __future__ import annotations
-from Event import Event
+from project.Event import Event
 
 class Flow:
     def __init__(self, flow_name):

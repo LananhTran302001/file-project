@@ -36,6 +36,3 @@ class EventCollection:
             collection_str = collection_str + str(e)
             collection_str = collection_str + "\n"
         return collection_str
-
-    def get_root_events(self):
-        pass

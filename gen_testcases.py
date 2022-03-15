@@ -1,5 +1,5 @@
 from pandas import DataFrame
-from Excel import Excel
+from project.Monitor import Excel
 
 excel = Excel("annotations.xlsx")
 excel.description()

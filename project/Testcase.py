@@ -6,7 +6,7 @@ class Testcase:
         self.input_labels = []
         self.output_states = []
         self.output_labels = []
-        self.output_data = []
+        self.output_elements = []
 
     def add_input(self, input_element, input_label):
         if (input_element):
@@ -25,25 +25,29 @@ class Testcase:
         if (output_state):
             self.output_states.append(output_state)
         if (output_element):
-            self.output_data
+            self.output_elements.append(output_element)
 
-    def add_output_data(self, output_data):
-        self.output_data.append(output_data)
+    def add_output_element(self, output_element):
+        self.output_elements.append(output_element)
 
     def add_output_label(self, output_label):
         self.output_labels.append(output_label)
+
+    def add_output_state(self, output_state):
+        self.output_states.append(output_state)
 
     def increase_to_length(self, list, length):
         for i in range(len(list), length):
             list.append("")
 
     def dictionary(self):
-        num_of_rows = max(len(self.input_elements), len(self.input_labels), len(self.output_labels), len(self.output_data))
+        num_of_rows = max(len(self.input_elements), len(self.input_labels), len(self.output_labels), len(self.output_states), len(self.output_elements))
         self.increase_to_length(self.index, num_of_rows)
         self.increase_to_length(self.input_elements, num_of_rows)
         self.increase_to_length(self.input_labels, num_of_rows)
         self.increase_to_length(self.output_labels, num_of_rows)
-        self.increase_to_length(self.output_data, num_of_rows)
+        self.increase_to_length(self.output_elements, num_of_rows)
+        self.increase_to_length(self.output_states, num_of_rows)
 
         input_data = []
         self.increase_to_length(input_data, num_of_rows)
@@ -54,5 +58,6 @@ class Testcase:
             'input label': self.input_labels,
             'input data': input_data,
             'expected output label': self.output_labels,
-            'expected output data': self.output_data
+            'expected output element': self.output_elements,
+            'expected output state': self.output_states
         }

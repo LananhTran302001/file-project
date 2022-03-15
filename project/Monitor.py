@@ -1,24 +1,17 @@
 import re
 from pandas import read_excel, ExcelFile
 
-ANNOTATION_SHEET = "annotations"
-ANNOTATION_COLUMN = "annotation"
-ELEMENT_SHEET = "elements"
-ELEMENT_COLUMN = "annotation"
-ELEMENT_MEANING_COLUMN = "meaning"
-ELEMENT_HTML_COLUMN = "html"
-STATE_SHEET = "states"
-STATE_COLUMN = "annotation"
-FLOW_SHEET = "flows"
-FLOW_COLUMN = "flow"
-EVENT_SHEET = "events"
-EVENT_COLUMN = "event"
+from myconstants import EXCEL_FILE_PATH
+from myconstants import ELEMENT_SHEET, ELEMENT_COLUMN, ELEMENT_MEANING_COLUMN, ELEMENT_HTML_COLUMN
+from myconstants import ANNOTATION_SHEET, ANNOTATION_COLUMN
+from myconstants import STATE_SHEET, STATE_COLUMN
+from myconstants import FLOW_SHEET, FLOW_COLUMN
+from myconstants import EVENT_SHEET, EVENT_COLUMN
 
-
-class Excel:
-    def __init__(self, file_path):
-        self.file_path = file_path
-        with ExcelFile(file_path) as reader:
+class Monitor:
+    def __init__(self):
+        self.file_path = EXCEL_FILE_PATH.strip()
+        with ExcelFile(self.file_path) as reader:
             self.elements = read_excel(reader, sheet_name=ELEMENT_SHEET).astype("string").loc[:,[ELEMENT_COLUMN, ELEMENT_MEANING_COLUMN, ELEMENT_HTML_COLUMN]]
             self.states = read_excel(reader, sheet_name=STATE_SHEET).astype("string").loc[:,STATE_COLUMN].to_list()
             self.annotations = read_excel(reader, sheet_name=ANNOTATION_SHEET).astype("string").loc[:,ANNOTATION_COLUMN].to_list()
@@ -32,14 +25,19 @@ class Excel:
             self.events = [i.lower().strip() for i in self.events]
 
     def description(self):
+        print(self.file_path)
         print(self.elements)
         print(self.states)
         print(self.flows)
         print(self.events)
         print(self.annotations)
+
+    def is_annotation(self, str):
+        current_anno_regex = self.annotations[0]
+        return re.match(current_anno_regex, str)
     
-    def is_element(self, element_annot):
-        return (self.elements[ELEMENT_COLUMN].str.contains(element_annot).any())
+    def is_element(self, annot):
+        return (self.elements[ELEMENT_COLUMN].str.contains(annot).any())
 
     def get_element(self, element_annot):
         return self.elements.loc[self.elements[ELEMENT_COLUMN] == element_annot]
@@ -70,15 +68,11 @@ class Excel:
             else:
                 return True
 
-    def is_state(self, str):
-        return (str in self.states)
+    def is_state(self, annot):
+        return (annot in self.states)
 
-    def is_annotation(self, str):
-        current_anno_regex = self.annotations[0]
-        return re.match(current_anno_regex, str)
-
-    def is_label(self, annotation):
-        return ((not self.is_element(annotation)) and (not self.is_state(annotation)))
+    def is_label(self, annot):
+        return ((not self.is_element(annot)) and (not self.is_state(annot)))
 
     def is_event_name(self, str):
         current_event_regex = self.events[0]

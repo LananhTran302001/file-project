@@ -1,3 +1,4 @@
 1. #ti #user-name #ti #password  -> 2. #bi #login  -> 3. #valid #pw #to 
 1. #ti #user-name #ti #password  -> 2. #bi #login  -> 3'. #invalid #pw #to 
 1. #ti #user-name #ti #password  -> 2. #bi #login  -> 3''. #empty #pw #to 
+1. #ti #user-name #ti #password  -> 2a. #ti #test  -> 4. #success
