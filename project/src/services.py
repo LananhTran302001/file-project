@@ -7,8 +7,17 @@ from src.Event import Event
 from src.Testcase import Testcase
 from src.myconstants import HTML_FILE_PATH, HTML_REPLACE_TAG
 
+# Monitor là biến lưu các quy tắc của annotation: regex, định nghĩa, html,..
 monitor = Monitor()
 
+
+
+# YÊU CẦU 1
+# ---------------------------------------------------------------------------------
+# Đọc file usecases --> trả về các flows & events
+# Basic flow:
+# 1. [#ti][#button]
+# 2. abc..
 def read_usecases_txt(usecases_file_path):
     flows = []
     events_collection = EventCollection()
@@ -30,6 +39,9 @@ def read_usecases_txt(usecases_file_path):
     return {'flows': flows, 'events': events_collection}
 
 
+# Đọc file flows --> trả về các flows và events
+# 1. [#ti] -> 2.[#yes][#button] ->..
+# 1. [#ti] -> 2a.[#no][#button] ->..
 def read_flows_txt(flows_file_path):
     flows = []
     events_collection = EventCollection()
@@ -61,6 +73,11 @@ def read_flows_txt(flows_file_path):
 
     return {'flows':flows, 'events':events_collection}
 
+
+# Đọc file events --> trả về các events
+# 1. [#ti] 2. 2a.
+# 2. [#yes][#button]
+# 2a. [#no][#button]
 def read_events_txt(events_file_path):
     events_collection = EventCollection()
 
@@ -86,12 +103,15 @@ def read_events_txt(events_file_path):
 
     return {'events':events_collection}
 
+
+# Viết các flows vào file txt: xuất file flows
 def flows_to_txt(flows, txt_file_path):
     with open(txt_file_path, mode="w", encoding="utf-8") as writer:
         for flow in flows:
             writer.write(str(flow))
             writer.write("\n")
 
+# Viết các events vào file txt: xuất file events
 def events_to_txt(events_collection, txt_file_path):
     with open(txt_file_path, mode="w", encoding="utf-8") as writer:
         for e in events_collection.events:
@@ -99,6 +119,11 @@ def events_to_txt(events_collection, txt_file_path):
             writer.write("\n")
 
 
+
+
+# YÊU CẦU 2
+# ---------------------------------------------------------------------------------
+# Sinh testcase từ 1 flow
 def flow_to_testcase(index, flow):
     t = Testcase(index)
 
@@ -138,6 +163,7 @@ def flow_to_testcase(index, flow):
         i = i + 1
     return t.dictionary()
 
+# Sinh và viết các testcase vào file excel: yêu cầu 2
 def flows_to_excel(flows, excel_file_path):
     testcases = {
         'STT': [],
@@ -164,19 +190,36 @@ def flows_to_excel(flows, excel_file_path):
         data.to_excel(writer)
 
 
+
+
+# YÊU CẦU 3
+# ---------------------------------------------------------------------------------
+# sinh string html từ 1 cặp label-element lấy từ testcase
+def to_html(label, element_annot):
+    html_label = ""
+    html_element = ""
+
+    if (element_annot):
+        open_html = monitor.get_element_o_html(element_annot)
+        close_html = monitor.get_element_c_html(element_annot)
+        if (len(close_html)):
+            return '\t' + open_html + label + close_html + '\n'
+        else:
+            html_element = open_html
+
+    if (label):
+        html_label = "<label>" + label + "</label>"
+    
+    return '\t' + html_label + '\n' + '\t' + html_element + '\n'
+
+
+# Sinh file template UI html cho 1 flow
 def flow_to_html(flow, html_file_path):
     html = ''
     testcase = flow_to_testcase(0, flow)
 
     for i in range(len(testcase['input element'])):
-        if (len(testcase['input label'][i])):
-            html = html + '\n'
-            html  = html + '<label>' + testcase['input label'][i] + '</label>'
-            html = html + '\n'
-        if (len(testcase['input element'][i])):
-            html = html + '\n'
-            html = html + monitor.get_element_html(testcase['input element'][i])
-            html = html + '\n'
+        html = html + to_html(testcase['input label'][i], testcase['input element'][i])
     
     lines = []
     with open(HTML_FILE_PATH, mode="r", encoding="utf-8") as reader:
@@ -185,5 +228,5 @@ def flow_to_html(flow, html_file_path):
     # Write the file out again
     with open(html_file_path, mode="w", encoding="utf-8") as writer:
         for line in lines:
-            line.replace(HTML_REPLACE_TAG, html)
+            line = line.replace(HTML_REPLACE_TAG, html)
             writer.write(line)

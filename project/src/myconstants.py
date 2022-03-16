@@ -11,10 +11,13 @@ OUTPUT_FOLDER_PATH = "../output/"
 
 ANNOTATION_SHEET = "annotations"
 ANNOTATION_COLUMN = "annotation"
+
 ELEMENT_SHEET = "elements"
 ELEMENT_COLUMN = "annotation"
 ELEMENT_MEANING_COLUMN = "meaning"
-ELEMENT_HTML_COLUMN = "html"
+ELEMENT_HTML_O_COLUMN = "html-open"
+ELEMENT_HTML_C_COLUMN = "html-close"
+
 STATE_SHEET = "states"
 STATE_COLUMN = "annotation"
 FLOW_SHEET = "flows"
