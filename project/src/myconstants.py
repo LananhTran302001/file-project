@@ -1,5 +1,13 @@
-EXCEL_FILE_PATH = "resources/annotations.xlsx"
-HTML_FILE_PATH = "resources/templateHTML.html"
+import os
+
+fileDir = os.path.dirname(os.path.realpath('__file__'))
+
+# relative paths to project directory
+EXCEL_FILE_PATH = os.path.join(fileDir, "resources/annotations.xlsx")
+HTML_FILE_PATH = os.path.join(fileDir, "resources/templateHTML.html")
+
+INPUT_FOLDER_PATH = "../input/"
+OUTPUT_FOLDER_PATH = "../output/"
 
 ANNOTATION_SHEET = "annotations"
 ANNOTATION_COLUMN = "annotation"

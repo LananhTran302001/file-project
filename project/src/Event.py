@@ -1,4 +1,4 @@
-from project.src.EventCollection import EventCollection
+from src.EventCollection import EventCollection
 
 class Event:
     def __init__(self, event_name):
@@ -30,6 +30,4 @@ class Event:
 
     def __str__(self):
         return (self.name + " " + self.annotations_to_str() + " " + self.next_to_str())
-
-    pass
 

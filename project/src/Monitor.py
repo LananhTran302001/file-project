@@ -1,16 +1,16 @@
 import re
 from pandas import read_excel, ExcelFile
 
-from project.src.myconstants import EXCEL_FILE_PATH
-from project.src.myconstants import ELEMENT_SHEET, ELEMENT_COLUMN, ELEMENT_MEANING_COLUMN, ELEMENT_HTML_COLUMN
-from project.src.myconstants import ANNOTATION_SHEET, ANNOTATION_COLUMN
-from project.src.myconstants import STATE_SHEET, STATE_COLUMN
-from project.src.myconstants import FLOW_SHEET, FLOW_COLUMN
-from project.src.myconstants import EVENT_SHEET, EVENT_COLUMN
+from src.myconstants import EXCEL_FILE_PATH
+from src.myconstants import ELEMENT_SHEET, ELEMENT_COLUMN, ELEMENT_MEANING_COLUMN, ELEMENT_HTML_COLUMN
+from src.myconstants import ANNOTATION_SHEET, ANNOTATION_COLUMN
+from src.myconstants import STATE_SHEET, STATE_COLUMN
+from src.myconstants import FLOW_SHEET, FLOW_COLUMN
+from src.myconstants import EVENT_SHEET, EVENT_COLUMN
 
 class Monitor:
     def __init__(self):
-        self.file_path = EXCEL_FILE_PATH.strip()
+        self.file_path = EXCEL_FILE_PATH
         with ExcelFile(self.file_path) as reader:
             self.elements = read_excel(reader, sheet_name=ELEMENT_SHEET).astype("string").loc[:,[ELEMENT_COLUMN, ELEMENT_MEANING_COLUMN, ELEMENT_HTML_COLUMN]]
             self.states = read_excel(reader, sheet_name=STATE_SHEET).astype("string").loc[:,STATE_COLUMN].to_list()

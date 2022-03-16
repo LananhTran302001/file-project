@@ -1,8 +1,8 @@
-from project.src.EventCollection import EventCollection
-from project.src.Monitor import Monitor
-from project.src.Flow import Flow
-from project.src.Event import Event
-from project.src.Testcase import Testcase
+from src.EventCollection import EventCollection
+from src.Monitor import Monitor
+from src.Flow import Flow
+from src.Event import Event
+from src.Testcase import Testcase
 
 from pandas import ExcelWriter, DataFrame
 
@@ -161,8 +161,3 @@ def flows_to_excel(excel_file_path, flows):
     data = DataFrame(testcases)
     with ExcelWriter(excel_file_path) as writer:
         data.to_excel(writer)
-
-
-result = read_flows_txt("flows.txt")
-flows = result["flows"]
-flows_to_excel("hello1.xlsx", flows)
