@@ -21,3 +21,5 @@ FLOW_SHEET = "flows"
 FLOW_COLUMN = "flow"
 EVENT_SHEET = "events"
 EVENT_COLUMN = "event"
+
+HTML_REPLACE_TAG = "[#content]"

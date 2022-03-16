@@ -39,8 +39,8 @@ class Monitor:
     def is_element(self, annot):
         return (self.elements[ELEMENT_COLUMN].str.contains(annot).any())
 
-    def get_element(self, element_annot):
-        return self.elements.loc[self.elements[ELEMENT_COLUMN] == element_annot]
+    def get_element(self, element_str):
+        return self.elements.loc[(self.elements[ELEMENT_COLUMN] == element_str) | (self.elements[ELEMENT_MEANING_COLUMN] == element_str)]
 
     def get_element_meaning(self, element_annot):
         return self.get_element(element_annot)[ELEMENT_MEANING_COLUMN].values[0]

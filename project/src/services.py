@@ -1,10 +1,11 @@
+from pandas import ExcelWriter, DataFrame
+
 from src.EventCollection import EventCollection
 from src.Monitor import Monitor
 from src.Flow import Flow
 from src.Event import Event
 from src.Testcase import Testcase
-
-from pandas import ExcelWriter, DataFrame
+from src.myconstants import HTML_FILE_PATH, HTML_REPLACE_TAG
 
 monitor = Monitor()
 
@@ -137,7 +138,7 @@ def flow_to_testcase(index, flow):
         i = i + 1
     return t.dictionary()
 
-def flows_to_excel(excel_file_path, flows):
+def flows_to_excel(flows, excel_file_path):
     testcases = {
         'STT': [],
         'input element': [],
@@ -161,3 +162,28 @@ def flows_to_excel(excel_file_path, flows):
     data = DataFrame(testcases)
     with ExcelWriter(excel_file_path) as writer:
         data.to_excel(writer)
+
+
+def flow_to_html(flow, html_file_path):
+    html = ''
+    testcase = flow_to_testcase(0, flow)
+
+    for i in range(len(testcase['input element'])):
+        if (len(testcase['input label'][i])):
+            html = html + '\n'
+            html  = html + '<label>' + testcase['input label'][i] + '</label>'
+            html = html + '\n'
+        if (len(testcase['input element'][i])):
+            html = html + '\n'
+            html = html + monitor.get_element_html(testcase['input element'][i])
+            html = html + '\n'
+    
+    lines = []
+    with open(HTML_FILE_PATH, mode="r", encoding="utf-8") as reader:
+        lines = reader.readlines()
+
+    # Write the file out again
+    with open(html_file_path, mode="w", encoding="utf-8") as writer:
+        for line in lines:
+            line.replace(HTML_REPLACE_TAG, html)
+            writer.write(line)
