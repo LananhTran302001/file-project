@@ -1,2 +1,0 @@
-1.  -> 2. #ti #id #ti #number  -> 3. #to #price #to #description  -> 4. #bi #endsale  -> 5. #to #total  -> 6.  -> 7.  -> 8. #ti #amount  -> 9. #to #balance  -> 10.  -> 11.  -> 12. #ti #endsale  -> 13. #to #endsale 
-1.  -> 2. #ti #id #ti #number  -> 3. #to #price #to #description  -> 4. #bi #endsale  -> 9. #to #balance  -> 13'. #ti #abc  -> 59. #ti #amount  -> 6.  -> 7.  -> 8. #ti #amount  -> 9. #to #balance  -> 10. 

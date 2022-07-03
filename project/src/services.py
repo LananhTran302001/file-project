@@ -33,12 +33,8 @@ def read_usecases_txt(usecases_file_path):
         
         elif (monitor.is_event_list(line)):
             start, end, flow_name = monitor.extract_event_list(line)
-            print(start)
-            print(end)
-            print(flow_name)
             
             for f in flows:
-                print(f.name)
                 if (f.equal(flow_name)):
                     break              
             events = f.get_event_list(start, end)

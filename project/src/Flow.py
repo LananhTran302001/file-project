@@ -35,10 +35,10 @@ class Flow:
     def get_event_list(self, start_event, end_event):
         a = self.get_event_index(start_event)
         b = self.get_event_index(end_event)
-        if (0 <= a and a < b and b < len(self.events)):
+        if (0 <= a and a <= b and b < len(self.events)):
             return self.events[a : b + 1]
         else:
-            print("Error: Khong co danh sach event tu ", start_event, " den ", end_event)
+            print("Error: Khong co danh sach event tu ", start_event, " den ", end_event, " trong ", self.name)
 
 
     def __str__(self):

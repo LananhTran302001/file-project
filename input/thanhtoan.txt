@@ -14,12 +14,11 @@ Basic flow:
 13. Hệ thống ghi nhận việc thanh toán một đơn hàng đã hoàn thành [#to][#endSale]
 
 Alternative flow 1:
-[1. 4., Basic flow]
-9. [#invalid product id] Thu ngân nhập sai mã hàng -> Hệ thống thông báo lỗi [#to][#error]
-13'. [#ti][#abc]
-59. số tiền nhận từ khách hàng [#ti][#amount]
-[6. 10., Basic flow]
+[1. 1., Basic flow]
+2'. [#invalid product id] Thu ngân nhập sai mã hàng -> Hệ thống thông báo lỗi [#to][#error]
+3'. Thu ngân nhập lại mã của các mặt hàng và số lượng [#ti][#id][#ti][#number]
+[3. 6., basic flow]
 
 Alternative flow 2:
-[4. 13'., Alternative flow 1]
-22. Hệ thống hiển thị số tiền dư [#to][#balance]
+[2'. 5., Alternative flow 1]
+6''. Thu ngân kiểm tra lại thông tin đơn hàng
