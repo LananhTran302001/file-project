@@ -1,0 +1,25 @@
+Basic flow:
+1. Use case này bắt đầu khi khách hàng đến quầy thanh toán cùng với giỏ hàng
+2. Thu ngân lưu lại mã của các mặt hàng và số lượng [#ti][#id][#ti][#number]
+3. Hệ thống hiển thị giá mặt hàng và thêm thông tin bổ sung vào dòng đơn hàng đang thực hiện [#to][#price][#to][#description]
+4. Thu ngân thông báo cho hệ thống biết đã hoàn thành việc nhập đơn hàng [#bi][#endSale]
+5. Hệ thống hiển thị tổng tiền đơn hàng [#to][#total]
+6. Thu ngân thông báo cho khách hàng biết tổng tiền đơn hàng
+7. Khách hàng nộp tiền mặt hoặc thẻ ngân hàng, số lượng nhiều hơn hoặc bằng tổng tiền hóa đơn
+8. Thu ngân nhập vào số tiền nhận từ khách hàng [#ti][#amount]
+9. Hệ thống hiển thị số tiền dư [#to][#balance]
+10. Thu ngân đưa lại tiền dư và phiếu thu cho khách hàng
+11. Khách hàng dời siêu thị với các mặt hàng đã mua và phiếu thu
+12. Thu ngân thông báo cho hệ thống biết việc thanh toán đơn hàng đã hoàn thành [#ti][#endSale]
+13. Hệ thống ghi nhận việc thanh toán một đơn hàng đã hoàn thành [#to][#endSale]
+
+Alternative flow 1:
+[1. 4., Basic flow]
+9. [#invalid product id] Thu ngân nhập sai mã hàng -> Hệ thống thông báo lỗi [#to][#error]
+13'. [#ti][#abc]
+59. số tiền nhận từ khách hàng [#ti][#amount]
+[6. 10., Basic flow]
+
+Alternative flow 2:
+[4. 13'., Alternative flow 1]
+22. Hệ thống hiển thị số tiền dư [#to][#balance]

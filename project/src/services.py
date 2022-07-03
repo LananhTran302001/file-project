@@ -27,14 +27,31 @@ def read_usecases_txt(usecases_file_path):
         lines = reader.readlines()
 
     for line in lines:
+        
         if (monitor.is_flow_name(line)):
             flows.append(Flow(line))
+        
+        elif (monitor.is_event_list(line)):
+            start, end, flow_name = monitor.extract_event_list(line)
+            print(start)
+            print(end)
+            print(flow_name)
+            
+            for f in flows:
+                print(f.name)
+                if (f.equal(flow_name)):
+                    break              
+            events = f.get_event_list(start, end)
+            
+            for e in events:
+                flows[-1].add_event(events_collection.get_event(e.name)) 
+
         elif (monitor.is_event_name(line)):
             e = Event(monitor.extract_event_name(line))
             e.set_annotations(monitor.extract_annotations(line))
             
             events_collection.add_event(e)
-            flows[-1].add_event(events_collection.get_event(e.name))
+            flows[-1].add_event(events_collection.get_event(e.name)) 
     
     return {'flows': flows, 'events': events_collection}
 

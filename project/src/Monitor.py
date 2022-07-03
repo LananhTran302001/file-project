@@ -6,7 +6,8 @@ from src.myconstants import ELEMENT_SHEET, ELEMENT_COLUMN, ELEMENT_MEANING_COLUM
 from src.myconstants import ANNOTATION_SHEET, ANNOTATION_COLUMN
 from src.myconstants import STATE_SHEET, STATE_COLUMN
 from src.myconstants import FLOW_SHEET, FLOW_COLUMN
-from src.myconstants import EVENT_SHEET, EVENT_COLUMN
+from src.myconstants import EVENT_SHEET, EVENT_COLUMN 
+from src.myconstants import EVENT_LIST_SHEET, EVENT_LIST_COLUMN
 
 class Monitor:
     def __init__(self):
@@ -17,12 +18,14 @@ class Monitor:
             self.annotations = read_excel(reader, sheet_name=ANNOTATION_SHEET).astype("string").loc[:,ANNOTATION_COLUMN].to_list()
             self.flows = read_excel(reader, sheet_name=FLOW_SHEET).astype("string").loc[:,FLOW_COLUMN].to_list()
             self.events = read_excel(reader, sheet_name=EVENT_SHEET).astype("string").loc[:,EVENT_COLUMN].to_list()
+            self.event_list = read_excel(reader, sheet_name=EVENT_LIST_SHEET).astype("string").loc[:,EVENT_LIST_COLUMN].to_list()
 
             self.elements = self.elements.applymap(lambda x: str(x).lower().strip(), na_action='ignore').fillna("")
             self.states = [i.lower().strip() for i in self.states]
             self.annotations = [i.lower().strip() for i in self.annotations]
             self.flows = [i.lower().strip() for i in self.flows]
             self.events = [i.lower().strip() for i in self.events]
+            self.event_list = [i.lower().strip() for i in self.event_list]
 
     def description(self):
         print(self.file_path)
@@ -30,6 +33,7 @@ class Monitor:
         print(self.states)
         print(self.flows)
         print(self.events)
+        print(self.event_list)
         print(self.annotations)
 
     def is_annotation(self, str):
@@ -80,6 +84,11 @@ class Monitor:
     def is_event_name(self, str):
         current_event_regex = self.events[0]
         return re.match(current_event_regex, str)
+
+    def is_event_list(self, str):
+        str = str.lower().strip()
+        event_list_regex = self.event_list[0]
+        return re.match(event_list_regex, str)
     
     def is_flow_name(self, str):
         str = str.lower().strip()
@@ -101,3 +110,11 @@ class Monitor:
         annotations_in_line = ["".join(x) for x in annotations_in_line]
         annotations_in_line = [annotation[1:-1].strip() for annotation in annotations_in_line]
         return annotations_in_line
+
+    def extract_event_list(self, line):
+        line = line.lower().strip()
+        event_list_regex = re.compile(self.event_list[0])
+        event_list = event_list_regex.search(line).group()
+        events, flow = event_list[1:-1].split(',')
+        start_event, end_event = events.split(' ')
+        return start_event, end_event, flow
